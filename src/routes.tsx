@@ -64,7 +64,7 @@ const Routes = () => {
         },
         {
           path: '',
-          element: <LandingPage />
+          element: <AuthLogin />
         },
         {
           path: '*',

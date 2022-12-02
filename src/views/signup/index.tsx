@@ -1,40 +1,26 @@
-// project imports
-import React, { useEffect, useState } from 'react';
+/* eslint-disable */
+import React, { useEffect, useState } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import {useNavigate } from "react-router-dom";
+import { auth, registerWithEmailAndPassword } from "../../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../../firebase';
-
-// ===============================|| AUTH - LOGIN ||=============================== //
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        iPTG
-      </Link>{' '}
-      {new Date().getFullYear()}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
-function Login() {
-  const [user, loading] = useAuthState(auth);
+export default function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, loading, error] = useAuthState(auth);
   const navigate = useNavigate();
   useEffect(() => {
     if (loading) {
@@ -42,21 +28,21 @@ function Login() {
       return;
     }
     if (user) {
-      navigate('/dashboard');
+      console.log(user.email +" " + user.displayName)
     }
   }, [user, loading]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
-      password: data.get('password')
+      password: data.get('password'),
     });
     const email = data.get('email');
-    const password = data.get('password');
+    const password = data.get('password')
     if (email != null && password != null) {
-      await logInWithEmailAndPassword(email.toString(), password.toString());
+      await registerWithEmailAndPassword("name", email.toString(), password.toString());
     }
   };
 
@@ -69,14 +55,14 @@ function Login() {
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -103,30 +89,17 @@ function Login() {
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
-            <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
-              Sign In
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 2 }}
+            >
+              Sign Up
             </Button>
-            <Button fullWidth onClick={signInWithGoogle} variant="contained" sx={{ mt: 1, mb: 2 }}>
-              Sign In With Google
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  Don&apos;t have an account? Sign Up
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
 }
-
-export default Login;
