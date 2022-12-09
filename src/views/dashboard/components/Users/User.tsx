@@ -1,9 +1,7 @@
 export default class User {
   firstName!: string;
 
-  lastname!: string;
+  lastName!: string;
 
   age!: number;
-
-  fullName!: string;
 }

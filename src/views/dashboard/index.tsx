@@ -17,6 +17,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import mainListItems from './listItems';
 import SubmitForm from './components/Users/submitForm';
+import User from './components/Users/User';
 
 const drawerWidth = 240;
 
@@ -73,6 +74,7 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const [open, setOpen] = React.useState(true);
   const [openSubmitForm, setOpenSubmitForm] = React.useState(false);
+  const [selectedUser, setSelectedUser] = React.useState<User>(new User());
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -93,7 +95,12 @@ function DashboardContent() {
           size="small"
           style={{ marginLeft: 16 }}
           onClick={() => {
-            console.log(params);
+            const user = new User();
+            user.firstName = params.row.firstName;
+            user.lastName = params.row.lastName;
+            user.age = params.row.age;
+            console.log(user);
+            setSelectedUser(user);
             openSubmitFormDialog();
           }}
         >
@@ -223,6 +230,7 @@ function DashboardContent() {
             formName="Edit User"
             formDescription=""
             handleCloseSubmitFormDialog={handleCloseSubmitFormDialog}
+            userInfo={selectedUser}
           />
         </Dialog>
       </Box>

@@ -1,14 +1,15 @@
 import React, { useReducer } from 'react';
-import { Button, TextField, Paper, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { Button, TextField, Paper } from '@mui/material';
 import SubmitFormProps from './SubmitFormProps';
 
 export default function SubmitForm(props: SubmitFormProps) {
+  const { userInfo } = props;
   const [formInput, setFormInput] = useReducer(
     (state: any, newState: any) => ({ ...state, ...newState }),
     {
-      name: '',
-      email: ''
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      age: userInfo.age
     }
   );
 
@@ -32,24 +33,30 @@ export default function SubmitForm(props: SubmitFormProps) {
       <Paper>
         <form onSubmit={handleSubmit} style={{ flexDirection: 'column' }}>
           <TextField
-            label="Name"
-            id="margin-normal"
-            name="name"
-            defaultValue={formInput.email}
-            helperText="Enter your full name"
+            id="filled-basic"
+            defaultValue={formInput.firstName}
+            label="First Name"
+            variant="filled"
             onChange={handleInput}
             fullWidth
-            sx={{ px: 10 }}
           />
           <TextField
-            label="Email"
-            id="margin-normal"
-            name="email"
-            defaultValue={formInput.name}
-            helperText="e.g. name@gmail.com"
+            margin="normal"
+            label="Last Name"
+            id="filled-basic"
+            variant="filled"
+            defaultValue={formInput.lastName}
             onChange={handleInput}
             fullWidth
-            sx={{ px: 10 }}
+          />
+          <TextField
+            margin="normal"
+            label="Age"
+            id="filled-basic"
+            variant="filled"
+            defaultValue={formInput.age}
+            onChange={handleInput}
+            fullWidth
           />
           <Button
             type="submit"
