@@ -13,8 +13,10 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { OutTable, ExcelRenderer } from 'react-excel-renderer';
 import mainListItems from './listItems';
 import SubmitForm from './components/Users/submitForm';
 import User from './components/Users/User';
@@ -161,6 +163,25 @@ function DashboardContent() {
     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 }
   ];
 
+  const handleUploadFile = (event: any) => {
+    const fileObj = event.target.files[0];
+
+    ExcelRenderer(fileObj, (err: any, resp: any) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const startDateTimeInMillis = -2208988800;
+        const updatedDate = startDateTimeInMillis + 43864 * 24 * 60 * 60;
+        console.log(updatedDate);
+        // console.log(resp);
+        // Excel stores dates as sequential serial numbers so that they can be used in
+        // calculations. By default, January 1, 1900 is serial number 1, and January 1, 2008
+        //  is serial number 39448 because it is 39,447 days after January 1, 1900.
+        //  Most functions automatically convert date values to serial numbers.
+      }
+    });
+  };
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -191,6 +212,7 @@ function DashboardContent() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <input type="file" onChange={handleUploadFile} />
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
