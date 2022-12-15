@@ -20,6 +20,7 @@ import { OutTable, ExcelRenderer } from 'react-excel-renderer';
 import mainListItems from './listItems';
 import SubmitForm from './components/Users/submitForm';
 import User from './components/Users/User';
+import AllocationRawData from './components/AllocationRawData';
 
 const drawerWidth = 240;
 
@@ -151,7 +152,7 @@ function DashboardContent() {
     }
   ];
 
-  const rows = [
+  const rowData = [
     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
     { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
@@ -163,6 +164,13 @@ function DashboardContent() {
     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 }
   ];
 
+  const getStartWeekTimeInMillis = (startWeekValue: number) => {
+    const myDate = '01-01-1900';
+    const dateArr = myDate.split('-');
+    const newDate = new Date(Number(dateArr[2]), Number(dateArr[1]) - 1, Number(dateArr[0]));
+    return newDate.getTime() + (startWeekValue - 2) * 86400 * 1000;
+  };
+
   const handleUploadFile = (event: any) => {
     const fileObj = event.target.files[0];
 
@@ -170,10 +178,39 @@ function DashboardContent() {
       if (err) {
         console.log(err);
       } else {
-        const startDateTimeInMillis = -2208988800;
-        const updatedDate = startDateTimeInMillis + 43864 * 24 * 60 * 60;
-        console.log(updatedDate);
-        // console.log(resp);
+        const { rows } = resp;
+        const [, , , , , , , , , , , , ...startWeekArray] = rows[2];
+        console.log(startWeekArray);
+        const startWeekTimeInMillis = getStartWeekTimeInMillis(startWeekArray[0]);
+        for (let i = 5; i < rows.length; i += 1) {
+          const allocationRawData = new AllocationRawData();
+          const [
+            id,
+            company,
+            team,
+            role,
+            name,
+            ingAcc,
+            fsoAcc,
+            status,
+            inDate,
+            outDate,
+            rotateDate,
+            tempLeaveDate,
+            ...allocation
+          ] = rows[i];
+          allocationRawData.company = company;
+          allocationRawData.team = team;
+          allocationRawData.role = role;
+          allocationRawData.name = name;
+          allocationRawData.ingenicoAcc = ingAcc;
+          allocationRawData.account = fsoAcc;
+          allocationRawData.status = status;
+          allocationRawData.startWeekAllocationTime = startWeekTimeInMillis;
+          allocationRawData.allocationProjectArray = allocation;
+          allocationRawData.numberOfWeek = startWeekArray.length;
+          console.log(allocationRawData);
+        }
         // Excel stores dates as sequential serial numbers so that they can be used in
         // calculations. By default, January 1, 1900 is serial number 1, and January 1, 2008
         //  is serial number 39448 because it is 39,447 days after January 1, 1900.
@@ -242,7 +279,7 @@ function DashboardContent() {
           }}
         >
           <div style={{ height: '100%', width: '100%', marginTop: 10 }}>
-            <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
+            <DataGrid rows={rowData} columns={columns} pageSize={10} rowsPerPageOptions={[10]} />
           </div>
           <Toolbar />
         </Box>
